@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notifications • Leensgram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: sans-serif; background: #fafafa; display: flex; justify-content: center; padding: 50px; }
+        .box { background: white; width: 500px; border: 1px solid #dbdbdb; border-radius: 8px; padding: 20px; }
+        .notif-row { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #efefef; }
+        .notif-row img { width: 44px; height: 44px; border-radius: 50%; margin-right: 15px; }
+        .notif-text { font-size: 14px; flex: 1; }
+        .post-preview { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h3>Notifications</h3><br>
+        {% for n in notifications %}
+            <div class="notif-row">
+                <img src="https://i.pravatar.cc/150?u={{n.from_user.username}}">
+                <div class="notif-text">
+                    <b>{{ n.from_user.username }}</b> 
+                    {% if n.notification_type == 1 %}liked your photo.{% endif %}
+                    {% if n.notification_type == 2 %}started following you.{% endif %}
+                    {% if n.notification_type == 3 %}commented on your post.{% endif %}
+                    
+                    {% if n.notification_type == 4 %}sent you a private message.{% endif %}
+                    <br><span style="color:#8e8e8e; font-size:12px;">{{ n.timestamp|timesince }} ago</span>
+                </div>
+                {% if n.post %}
+                    <img src="{{ n.post.image.url }}" class="post-preview">
+                {% endif %}
+            </div>
+        {% empty %}
+            <p style="text-align: center; color: #8e8e8e;">No notifications yet.</p>
+        {% endfor %}
+        <br><a href="/" style="color: #0095f6; text-decoration: none; font-weight: bold;">Back to Home</a>
+    </div>
+</body>
+</html>

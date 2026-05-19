@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{user_object.username}} • Leensgram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #fff; display: flex; justify-content: center; }
+        .profile-container { width: 935px; margin-top: 30px; padding: 0 20px; }
+        
+        .header { display: flex; margin-bottom: 44px; align-items: flex-start; }
+        .profile-pic-area { width: 290px; display: flex; justify-content: center; position: relative; }
+        .pfp { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 1px solid #dbdbdb; }
+        .note-bubble { position: absolute; top: -10px; left: 60px; background: #fff; padding: 5px 12px; border-radius: 20px; border: 1px solid #dbdbdb; font-size: 11px; color: #8e8e8e; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+        .info-area { flex: 1; }
+        .user-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+        .username { font-size: 20px; font-weight: 300; }
+        .stats-row { display: flex; gap: 40px; margin-bottom: 20px; list-style: none; }
+        .stats-row li { font-size: 16px; color: #262626; }
+        .stats-row b { font-weight: 600; color: #000; }
+        .bio-area b { display: block; margin-bottom: 5px; font-size: 14px; }
+        .bio-text { font-size: 14px; line-height: 20px; color: #262626; white-space: pre-wrap; }
+        .btn-grey { background: #efefef; border: none; padding: 7px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; color: #000; text-decoration: none; display: inline-block; }
+        
+        .tabs { border-top: 1px solid #dbdbdb; display: flex; justify-content: center; gap: 60px; margin-top: 50px; }
+        .tab-item { padding: 15px 0; font-size: 12px; font-weight: 600; color: #8e8e8e; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .tab-item.active { border-top: 1px solid #000; color: #000; margin-top: -1px; }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 400px; border-radius: 12px; overflow: hidden; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #efefef; }
+        .user-list-item { display: flex; align-items: center; padding: 10px 15px; text-decoration: none; color: black; }
+        .user-list-item img { width: 35px; height: 35px; border-radius: 50%; margin-right: 12px; border: 1px solid #dbdbdb; }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="profile-pic-area">
+                <div class="note-bubble">Note...</div>
+                {% if user_profile.profileimg %}
+                    <img src="{{user_profile.profileimg.url}}" class="pfp">
+                {% else %}
+                    <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" class="pfp">
+                {% endif %}
+            </div>
+            
+            <div class="info-area">
+                <div class="user-row">
+                    <span class="username">{{user_object.username}}</span>
+                    {% if request.user == user_object %}
+                        <a href="{% url 'settings' %}" style="color: black;"><i class="fa-solid fa-gear" style="font-size: 20px;"></i></a>
+                    {% endif %}
+                </div>
+
+                <div class="user-row">
+                    {% if request.user.username == user_object.username %}
+                        <a href="{% url 'settings' %}" class="btn-grey">Edit profile</a>
+                    {% else %}
+                        <form action="/follow" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="follower" value="{{request.user.username}}">
+                            <input type="hidden" name="user" value="{{user_object.username}}">
+                            <button type="submit" class="btn-grey" 
+                                style="background-color: {% if button_text == 'Follow' %}#0095f6{% else %}#efefef{% endif %}; 
+                                       color: {% if button_text == 'Follow' %}white{% else %}black{% endif %};">
+                                {{button_text}}
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+
+                <ul class="stats-row">
+                    <li><b>{{user_post_length}}</b> posts</li>
+                    <li onclick="openFollowers()" style="cursor:pointer;"><b>{{follower_count}}</b> followers</li>
+                    <li onclick="openFollowing()" style="cursor:pointer;"><b>{{following_count}}</b> following</li>
+                </ul>
+
+                <div class="bio-area">
+                    <b>{{user_profile.full_name}}</b>
+                    <div class="bio-text">{% if user_profile.location %}{{user_profile.location}}<br>{% endif %}{{user_profile.bio}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab-item active"><i class="fa-solid fa-table-cells"></i> POSTS</div>
+            <div class="tab-item"><i class="fa-regular fa-bookmark"></i> SAVED</div>
+            <div class="tab-item"><i class="fa-regular fa-id-badge"></i> TAGGED</div>
+        </div>
+
+        <!-- UPDATED POSTS GRID WITH FALLBACK -->
+        <div class="posts-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 5px;">
+            {% for post in user_posts %}
+            <div style="aspect-ratio: 1 / 1; overflow: hidden; background-color: #efefef; position: relative;">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% elif post.video_file %}
+                    <video src="{{ post.video_file.url }}" style="width: 100%; height: 100%; object-fit: cover;"></video>
+                    <i class="fa-solid fa-play" style="position: absolute; top: 10px; right: 10px; color: white;"></i>
+                {% else %}
+                    <!-- FALLBACK: This shows unique random photos for users created via the script -->
+                    <img src="https://picsum.photos/500/500?random={{post.id}}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% endif %}
+            </div>
+            {% empty %}
+                <div style="grid-column: span 3; text-align: center; margin-top: 50px;">
+                    <i class="fa-solid fa-camera" style="font-size: 40px; color: #8e8e8e;"></i>
+                    <p style="color: #8e8e8e; margin-top: 10px;">No posts yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Modals (Followers/Following) -->
+    <div id="followersModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><b>Followers</b><span onclick="closeFollowers()" style="cursor:pointer;">&times;</span></div><div style="max-height: 400px; overflow-y: auto;">{% for f in followers_list %}<a href="/profile/{{f.follower}}" class="user-list-item"><img src="https://i.pravatar.cc/150?u={{f.follower}}"><b>{{f.follower}}</b></a>{% endfor %}</div></div></div>
+    <div id="followingModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><b>Following</b><span onclick="closeFollowing()" style="cursor:pointer;">&times;</span></div><div style="max-height: 400px; overflow-y: auto;">{% for f in following_list %}<a href="/profile/{{f.user}}" class="user-list-item"><img src="https://i.pravatar.cc/150?u={{f.user}}"><b>{{f.user}}</b></a>{% endfor %}</div></div></div>
+
+    <script>
+        function openFollowers() { document.getElementById('followersModal').style.display = 'flex'; }
+        function closeFollowers() { document.getElementById('followersModal').style.display = 'none'; }
+        function openFollowing() { document.getElementById('followingModal').style.display = 'flex'; }
+        function closeFollowing() { document.getElementById('followingModal').style.display = 'none'; }
+        window.onclick = function(e) { if (e.target.className === 'modal-overlay') { closeFollowers(); closeFollowing(); } }
+    </script>
+</body>
+</html>

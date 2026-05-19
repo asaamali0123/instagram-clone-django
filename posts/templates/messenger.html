@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inbox • Messages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:sans-serif; }
+        body { background-color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar Reuse */
+        .sidebar { width: 245px; border-right: 1px solid #dbdbdb; padding: 20px 15px; display: flex; flex-direction: column; }
+        .nav-item { display: flex; align-items: center; padding: 12px; border-radius: 8px; text-decoration: none; color: #000; margin-bottom: 5px; }
+        .nav-item:hover { background: #fafafa; }
+
+        /* Messenger Layout */
+        .messenger-container { flex: 1; display: flex; }
+        
+        /* Left: Inbox List */
+        .inbox-list { width: 350px; border-right: 1px solid #dbdbdb; overflow-y: auto; }
+        .inbox-header { padding: 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid #efefef; }
+        .friend-row { display: flex; align-items: center; padding: 15px 20px; text-decoration: none; color: #000; transition: 0.2s; }
+        .friend-row:hover { background: #fafafa; }
+        .friend-row img { width: 56px; height: 56px; border-radius: 50%; margin-right: 15px; }
+
+        /* Right: Chat Area */
+        .chat-area { flex: 1; display: flex; flex-direction: column; background: #fff; }
+        .chat-header { padding: 15px 25px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; gap: 15px; }
+        
+        .messages-display { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 60%; padding: 8px 15px; border-radius: 20px; font-size: 15px; line-height: 1.4; }
+        .sent { align-self: flex-end; background: #0095f6; color: #fff; }
+        .received { align-self: flex-start; background: #efefef; color: #000; }
+
+        /* Input area */
+        .input-box { padding: 20px; border-top: 1px solid #dbdbdb; }
+        .input-wrapper { display: flex; border: 1px solid #dbdbdb; border-radius: 25px; padding: 10px 20px; align-items: center; }
+        .input-wrapper input { flex: 1; border: none; outline: none; font-size: 15px; }
+        .send-btn { color: #0095f6; font-weight: bold; cursor: pointer; background: none; border: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <h2 style="margin-bottom: 20px;">Leensgram</h2>
+        <a href="/" class="nav-item"><i class="fa-solid fa-house"></i>&nbsp;&nbsp;Home</a>
+        <a href="/messages/" class="nav-item" style="font-weight: bold;"><i class="fa-solid fa-paper-plane"></i>&nbsp;&nbsp;Messages</a>
+        <a href="/profile/{{user.username}}" class="nav-item"><i class="fa-regular fa-circle-user"></i>&nbsp;&nbsp;Profile</a>
+    </nav>
+
+    <div class="messenger-container">
+        <!-- Inbox List -->
+        <div class="inbox-list">
+            <div class="inbox-header">{{user.username}}</div>
+            {% for friend in friends %}
+            <a href="/messages/{{friend.username}}" class="friend-row">
+                <img src="https://i.pravatar.cc/150?u={{friend.username}}">
+                <div>
+                    <b>{{friend.username}}</b><br>
+                    <span style="color: #8e8e8e; font-size: 13px;">Active now</span>
+                </div>
+            </a>
+            {% empty %}
+            <p style="text-align: center; margin-top: 50px; color: #8e8e8e;">Follow people to message them!</p>
+            {% endfor %}
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area">
+            {% if active_chat_user %}
+                <div class="chat-header">
+                    <img src="https://i.pravatar.cc/150?u={{active_chat_user.username}}" style="width: 30px; border-radius: 50%;">
+                    <b>{{active_chat_user.username}}</b>
+                </div>
+
+                <div class="messages-display" id="msgBox">
+                    {% for msg in chat_messages %}
+                        <div class="msg {% if msg.sender == user %}sent{% else %}received{% endif %}">
+                            {{msg.content}}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="input-box">
+                    <form action="/send-message/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="receiver" value="{{active_chat_user.username}}">
+                        <div class="input-wrapper">
+                            <input type="text" name="content" placeholder="Message..." required autocomplete="off">
+                            <button type="submit" class="send-btn">Send</button>
+                        </div>
+                    </form>
+                </div>
+            {% else %}
+                <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#8e8e8e;">
+                    <i class="fa-regular fa-paper-plane" style="font-size: 80px; margin-bottom: 20px;"></i>
+                    <h2>Your Messages</h2>
+                    <p>Send private photos and messages to a friend.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Auto-scroll chat to the bottom
+        var objDiv = document.getElementById("msgBox");
+        if(objDiv) objDiv.scrollTop = objDiv.scrollHeight;
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login • Leensgram</title>
+    <link rel="stylesheet" href="{% static 'css/leensgram.css' %}">
+    <style>
+        body { background-color: #000; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-box { width: 350px; text-align: center; border: 1px solid #363636; padding: 40px; }
+        input { width: 100%; padding: 10px; margin: 5px 0; background: #121212; border: 1px solid #363636; color: #fff; border-radius: 3px; box-sizing: border-box; }
+        .btn-login { width: 100%; background: #0095f6; color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .forgot { color: #fff; font-size: 12px; text-decoration: none; margin-top: 20px; display: block; }
+        .signup-link { margin-top: 30px; border: 1px solid #363636; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="login-box">
+            <h1 style="font-size: 35px;">Leensgram</h1>
+            <form method="POST">
+                {% csrf_token %}
+                
+<input type="text" name="username" placeholder="Username or email"> <!-- MUST BE "username" -->
+<input type="password" name="password" placeholder="Password">  
+                <button type="submit" class="btn-login">Log in</button>
+            </form>
+            <a href="#" class="forgot">Forgot password?</a>
+        </div>
+        <div class="signup-link">
+            Don't have an account? <a href="{% url 'signup' %}" style="color: #0095f6; text-decoration: none;">Sign up</a>
+        </div>
+    </div>
+</body>
+</html>

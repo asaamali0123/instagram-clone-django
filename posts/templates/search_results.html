@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results • Leensgram</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #fafafa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; }
+        
+        .results-container { 
+            background: #fff; width: 450px; border: 1px solid #dbdbdb; 
+            margin-top: 50px; border-radius: 8px; padding: 20px; 
+        }
+
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .back-link { text-decoration: none; color: #0095f6; font-weight: bold; }
+
+        .user-card { 
+            display: flex; align-items: center; padding: 12px; 
+            text-decoration: none; color: black; border-bottom: 1px solid #efefef;
+            transition: background 0.2s;
+        }
+        .user-card:hover { background-color: #f2f2f2; border-radius: 8px; }
+        
+        .user-card img { width: 44px; height: 44px; border-radius: 50%; margin-right: 15px; border: 1px solid #dbdbdb; }
+        
+        .user-info b { font-size: 14px; }
+        .user-info p { font-size: 14px; color: #8e8e8e; margin: 0; }
+
+        .no-results { text-align: center; color: #8e8e8e; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+    <div class="results-container">
+        <div class="header">
+            <h3>Results for "{{ query }}"</h3>
+            <a href="/" class="back-link"><i class="fa-solid fa-house"></i> Home</a>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #dbdbdb; margin-bottom: 10px;">
+
+        {% if results %}
+            {% for result in results %}
+            <a href="/profile/{{ result.username }}" class="user-card">
+                <!-- Using a placeholder image for now -->
+                <img src="https://i.pravatar.cc/150?u={{result.username}}" alt="">
+                <div class="user-info">
+                    <b>{{ result.username }}</b>
+                    <p>{{ result.first_name }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="no-results">
+                <i class="fa-solid fa-magnifying-glass" style="font-size: 40px; margin-bottom: 15px;"></i>
+                <p>No users found matching that name.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
