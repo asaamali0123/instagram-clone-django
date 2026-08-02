@@ -1,44 +1,63 @@
-# 🛒 Django E-Commerce Web Application
+# 📱 Leensgram – A Django Social Media Platform
 
-A full-stack e-commerce web application built with **Django** and **PostgreSQL**, providing a complete
-online shopping experience for customers and a powerful administration panel for store management.
+Leensgram is a full-stack social media web application inspired by the user experience and workflow of modern social networking platforms. Rather than replicating an existing application, the project was built to explore how real-world social media systems are architected, focusing on scalable backend development, relational database design, and user interaction.
 
-The project follows Django's **Model-View-Template (MVT)** architecture and uses the **Django ORM**
-for efficient database interactions, resulting in a scalable, secure, and maintainable web application.
+Developed using **Django** and **PostgreSQL**, Leensgram demonstrates the implementation of essential social media features such as authentication, content sharing, user relationships, messaging, notifications, and media feeds while following clean software engineering practices.
 
 ---
 
 ## 🚀 Features
 
-### User Features
+### User Management
 
 * User registration and secure authentication
-* Login and logout functionality
-* Browse products
-* View detailed product information
-* Add and remove products from the shopping cart
-* Update cart quantities
-* Secure checkout process
-* Place customer orders
-* Session-based shopping experience
+* User profiles
+* Follow and unfollow users
+* Profile management
 
-### Admin Features
+### Content Management
 
-* Manage product catalog
-* Add new products
-* Update product information
-* Delete or deactivate products
-* Manage product pricing
-* Monitor inventory
-* Manage customer orders
-* Access Django Admin dashboard
+* Create image and video posts
+* Add captions to posts
+* Edit and delete posts
+* Media upload support
+
+### Social Interaction
+
+* Like posts
+* Comment on posts
+* Follow user activity
+* Notification system
+
+### Feed & Discovery
+
+* Personalized home feed
+* Explore page with grid layout
+* Reels-style vertical video feed
+* Infinite content browsing experience
+
+### Messaging
+
+* Chat interface
+* User-to-user messaging
+* Conversation management
+
+### Stories
+
+* Story creation
+* Story viewing
+* Story management
+
+### Scalability
+
+* Seeded database with over **100 users** for testing application behavior and database performance.
 
 ---
 
 ## 🛠️ Tech Stack
 
 * **Backend:** Django
-* **Language:** Python
+* **Programming Language:** Python
 * **Database:** PostgreSQL
 * **ORM:** Django ORM
 * **Frontend:** HTML, CSS, JavaScript
@@ -48,40 +67,47 @@ for efficient database interactions, resulting in a scalable, secure, and mainta
 
 ## 🏗️ Architecture
 
-The application follows Django's **MVT (Model-View-Template)** architecture.
+The application follows Django's **Model-View-Template (MVT)** architecture.
 
-* **Models** manage application data.
-* **Views** handle business logic.
+* **Models** define the application's relational data.
+* **Views** implement business logic.
 * **Templates** render dynamic web pages.
-* **Django ORM** simplifies database operations.
-* **PostgreSQL** stores relational data for users, products, carts, and orders.
+* **Django ORM** manages secure and efficient database operations.
+* **PostgreSQL** ensures data consistency and supports complex relationships between users and content.
+
+---
+
+## 🗄️ Database Design
+
+The application is built around a structured relational database consisting of:
+
+* User
+* Profile
+* Post
+* Comment
+* Like
+* Follow
+* Message
+* Story
+* Notification
+
+These entities are connected using primary and foreign key relationships to maintain data integrity and support efficient queries.
 
 ---
 
 ## 📂 Core Modules
 
-* User Authentication
-* Product Management
-* Shopping Cart
-* Checkout System
-* Order Management
-* Admin Dashboard
-* Database Management
-
----
-
-## 🗄️ Database
-
-The application uses **PostgreSQL** to maintain structured relational data, including:
-
-* Users
-* Products
-* Categories
-* Shopping Cart
-* Orders
-* Order Items
-
-The Django ORM provides secure and efficient CRUD operations while maintaining data integrity.
+* Authentication & Authorization
+* User Profiles
+* Post Management
+* Feed Generation
+* Explore Page
+* Reels Feed
+* Likes & Comments
+* Follow System
+* Messaging
+* Stories
+* Notifications
 
 ---
 
@@ -98,44 +124,49 @@ The Django ORM provides secure and efficient CRUD operations while maintaining d
 
 ## 🎯 Learning Outcomes
 
-This project demonstrates practical experience with:
+This project strengthened my understanding of:
 
 * Full-stack web development
-* Django framework
+* Django framework and MVT architecture
 * PostgreSQL database design
-* Authentication and authorization
-* E-commerce workflow implementation
-* CRUD operations
 * Relational database modeling
-* Backend architecture
-* Django ORM
-* Secure web application development
+* User authentication and authorization
+* Complex entity relationships
+* CRUD operations
+* Backend application architecture
+* Scalable social media system design
+* Frontend–backend integration
 
 ---
 
 ## 📸 Screenshots
 
-Add screenshots of:
+Include screenshots of:
 
-* Home Page
-* Product Listing
-* Product Details
-* Shopping Cart
-* Checkout Page
-* Admin Dashboard
+* Login & Registration
+* User Profile
+* Home Feed
+* Explore Page
+* Reels Feed
+* Post Details
+* Messaging Interface
+* Stories
+* Notifications
 
 ---
 
 ## 🚀 Future Improvements
 
-* Online payment gateway integration
-* Product search and filtering
-* Wishlist functionality
-* Product reviews and ratings
-* Order tracking
-* Email notifications
-* REST API using Django REST Framework
-* Responsive UI enhancements
+* Real-time messaging with WebSockets
+* Live notifications
+* Advanced search functionality
+* Hashtags and trending topics
+* User mentions
+* Bookmark posts
+* REST API with Django REST Framework
+* Mobile-responsive interface
+* Cloud deployment
+* Media optimization and caching
 
 ---
 
@@ -143,4 +174,4 @@ Add screenshots of:
 
 **Muhammad Asaam Ali**
 
-If you found this project useful, feel free to ⭐ the repository.
+If you found this project interesting, feel free to ⭐ the repository.
